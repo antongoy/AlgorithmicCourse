@@ -14,6 +14,7 @@ std::vector<Point> read_points(std::string filename) {
     std::fstream input_file(filename, std::fstream::in);
 
     input_file >> n_points;
+    std::cout << ">>> Number of points in the file: " << n_points << std::endl;
 
     std::vector<Point> P(n_points);
 

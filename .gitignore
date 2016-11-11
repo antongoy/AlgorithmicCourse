@@ -17,5 +17,7 @@ Lab2/input/
 Lab1/.idea/
 Lab2/.idea/
 
+Lab2/src/.ipynb_checkpoints/
+
 argparse/
 CmdParser/
