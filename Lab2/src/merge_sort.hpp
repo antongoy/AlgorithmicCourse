@@ -2,10 +2,11 @@
 // Created by anton-goy on 27.09.16.
 //
 
-#ifndef LAB2_MERGE_SORT_HPP
-#define LAB2_MERGE_SORT_HPP
+#ifndef LAB1_MERGE_SORT_HPP
+#define LAB1_MERGE_SORT_HPP
 
 #include <iostream>
+#include <iterator>
 #include <exception>
 #include <vector>
 
@@ -75,4 +76,4 @@ std::vector<T> merge_sort(std::vector<T>& array, bool (*cmpr)(T&, T&))  {
     return array;
 }
 
-#endif //LAB2_MERGE_SORT_HPP
+#endif //LAB1_MERGE_SORT_HPP
