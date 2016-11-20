@@ -9,9 +9,13 @@ double is_nonleft_angle(Point &a, Point &b, Point &c) {
     return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x) <= 0;
 }
 
-std::vector<int> compute_depths(std::vector<Point> &points) {
+std::vector<int> compute_depths(std::vector<Point> &points, bool verbose) {
 
     std::vector<int> depths;
+
+    if (verbose) {
+        std::cout << ">>> Sorting..." << std::endl;
+    }
 
     merge_sort<Point>(points,
                       [](Point& p, Point& q) {
@@ -22,18 +26,23 @@ std::vector<int> compute_depths(std::vector<Point> &points) {
         points[i].is_in_hull = false;
     }
 
-    compute_depths_inside(points, 0, &depths);
+    compute_depths_inside(points, 0, &depths, verbose);
 
     return depths;
 }
 
-void compute_depths_inside(std::vector<Point> &points, long depth, std::vector<int> *depths) {
-    std::cout << ">>> Looking for points of the depth " << depth << std::endl;
+void compute_depths_inside(std::vector<Point> &points, long depth, std::vector<int> *depths, bool verbose) {
+    if (verbose) {
+        std::cout << ">>> Looking for points of the depth " << depth << "..." << std::endl;
+    }
 
     size_t n_points = points.size();
 
     if (n_points <= 3) {
-        std::cout << ">>> Number of points of the depth " << depth  << ": " << n_points << std::endl;
+        if (verbose) {
+            std::cout << ">>> Number of points of the depth " << depth  << ": " << n_points << std::endl;
+        }
+
         (*depths).push_back(n_points);
 
         return;
@@ -104,6 +113,28 @@ void compute_depths_inside(std::vector<Point> &points, long depth, std::vector<i
     // Constructing upper bound of the convex hull
     for (int i = n_points - 1; i >= 0; --i) {
         if (points[i].y - slope * points[i].x >= intercept) {
+            if (hull.size() == 1) {
+                hull.push_back(i);
+                points[i].is_in_hull = true;
+                continue;
+            }
+
+            if (hull.size() == 2) {
+                if (is_nonleft_angle(points[hull[0]], points[hull[1]], points[i])) {
+                    j = hull.back();
+                    points[j].is_in_hull = false;
+                    hull.pop_back();
+
+                    hull.push_back(i);
+                    points[i].is_in_hull = true;
+                } else {
+                    hull.push_back(i);
+                    points[i].is_in_hull = true;
+                }
+
+                continue;
+            }
+
             j = hull.back();
             points[j].is_in_hull = false;
             hull.pop_back();
@@ -136,7 +167,9 @@ void compute_depths_inside(std::vector<Point> &points, long depth, std::vector<i
     size_t hull_size = hull.size();
     (*depths).push_back(hull_size);
 
-    std::cout << ">>> Number of points of the depth " << depth  << ": " << hull_size << std::endl;
+    if (verbose) {
+        std::cout << ">>> Number of points of the depth " << depth  << ": " << hull_size << std::endl;
+    }
 
     if (hull_size == n_points) {
         return;
@@ -151,5 +184,5 @@ void compute_depths_inside(std::vector<Point> &points, long depth, std::vector<i
         }
     }
 
-    compute_depths_inside(filtered_points, depth + 1, depths);
+    compute_depths_inside(filtered_points, depth + 1, depths, false);
 }

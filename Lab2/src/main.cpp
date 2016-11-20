@@ -5,7 +5,7 @@
 #include <ctime>
 
 #include "point_depths.hpp"
-#include "argparse.hpp"
+#include "cmdparser.hpp"
 
 std::vector<Point> read_points(std::string filename) {
     double x_coord, y_coord;
@@ -31,37 +31,29 @@ std::vector<Point> read_points(std::string filename) {
     return points;
 }
 
-void write_depths(std::vector<int> depths, std::string filename) {
-    std::cout << ">>> Saving the depths into the file: " << filename << std::endl;
-    std::fstream output_file(filename, std::fstream::out);
-
-    // Max depth
-    output_file << depths.size() << std::endl;
-
-    for (int i = 0; i < depths.size(); ++i) {
-        output_file << i << ' ' << depths[i] << std::endl;
-    }
-}
-
 int main(int argc, const char **argv) {
-    ArgumentParser arg_parser;
+    cli::Parser arg_parser(argc, argv);
 
-    arg_parser.appName("construct_convex_hull");
-    arg_parser.addArgument("-o", "--output_file", 1);
-    arg_parser.addFinalArgument("INPUT_FILE");
-    arg_parser.parse((size_t) argc, argv);
+    arg_parser.set_required<std::string>("i", "input_file",
+                                         "-i, --input_file \tFilename of file contained input data");
+    arg_parser.set_optional<bool>("v", "verbose", false,
+                                  "If true then print additional information");
+
+    arg_parser.run_and_exit_if_error();
+
+    std::string input_filename = arg_parser.get<std::string>("i");
+    bool verbose = arg_parser.get<bool>("v");
 
     clock_t begin = clock();
 
-    std::string filename = arg_parser.retrieve<std::string>("INPUT_FILE");
-    std::string output_filename = arg_parser.retrieve<std::string>("o");
+    std::vector<Point> points = read_points(input_filename);
 
-    std::vector<Point> points = read_points(filename);
+    std::vector<int> depths = compute_depths(points, verbose);
 
-    std::vector<int> depths = compute_depths(points);
-
-    if (output_filename.compare(""))
-        write_depths(depths, output_filename);
+    std::cout << ">>> Depth table:" << std::endl;
+    for (int m = 0; m < depths.size(); ++m) {
+        std::cout << "\t\t  (" << m << ", " << depths[m] << ")" << std::endl;
+    }
 
     clock_t end = clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;

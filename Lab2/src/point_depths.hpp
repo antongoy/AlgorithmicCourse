@@ -12,8 +12,8 @@
 #include "merge_sort.hpp"
 
 // Fill in `depth` field of each element of the array
-std::vector<int> compute_depths(std::vector<Point> &points);
-void compute_depths_inside(std::vector<Point> &points, long depth, std::vector<int> *depths);
+std::vector<int> compute_depths(std::vector<Point> &points, bool verbose);
+void compute_depths_inside(std::vector<Point> &points, long depth, std::vector<int> *depths, bool verbose);
 
 
 #endif //LAB2_POINT_DEPTHS_HPP
