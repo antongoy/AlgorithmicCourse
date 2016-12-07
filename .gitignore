@@ -2,24 +2,14 @@
 *.djvu
 *.doc
 
-Lab1/*.pdf
-Lab1/*.doc
-Lab1/*.exe
-Lab1/*.zip
+Lab?/*.pdf
+Lab?/*.doc
+Lab?/*.exe
+Lab?/*.zip
 
-Lab2/*.pdf
-Lab2/*.doc
-Lab2/*.exe
-Lab2/*.zip
-
-Lab1/bin/
-Lab2/bin/
-
-Lab1/input/
-Lab2/input/
-
-Lab1/.idea/
-Lab2/.idea/
+Lab?/bin/
+Lab?/input/
+Lab?/.idea/
 
 Lab2/tests/
 Lab2/src/.ipynb_checkpoints/
